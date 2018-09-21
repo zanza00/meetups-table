@@ -1,6 +1,4 @@
-import * as getMonth from 'date-fns/get_month';
-import * as getDate from 'date-fns/get_date';
-import * as getDay from 'date-fns/get_day';
+import { getMonth, getDate, getDay } from 'date-fns';
 
 import { MONTHS_ITA, DAYS_ITA } from './constants';
 import { EventDetails } from './model';

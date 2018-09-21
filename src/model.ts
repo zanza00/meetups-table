@@ -13,7 +13,6 @@ export type EventbriteDetails = {
   date: string;
   link: string;
   location: string;
-  time: string;
 };
 
 export const EventbriteDetails = ({
@@ -21,24 +20,43 @@ export const EventbriteDetails = ({
   date,
   link,
   location,
-  time,
 }: {
   name: EventbriteDetails['name'];
   date: EventbriteDetails['date'];
   link: EventbriteDetails['link'];
   location: EventbriteDetails['location'];
-  time: EventbriteDetails['time'];
 }): ParsedEventDetails => ({
   type: 'EventbriteDetails',
   name,
   date,
   link,
   location,
-  time,
 });
 
 export type MeetupDetails = {
   type: 'MeetupDetails';
+  name: string;
+  date: number;
+  link: string;
+  location: string;
 };
+
+export const MeetupDetails = ({
+  name,
+  date,
+  link,
+  location,
+}: {
+  name: MeetupDetails['name'];
+  date: MeetupDetails['date'];
+  link: MeetupDetails['link'];
+  location: MeetupDetails['location'];
+}): ParsedEventDetails => ({
+  type: 'MeetupDetails',
+  name,
+  date,
+  link,
+  location,
+});
 
 export type ParsedEventDetails = EventbriteDetails | MeetupDetails;

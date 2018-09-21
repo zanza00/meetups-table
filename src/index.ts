@@ -1,6 +1,7 @@
 import * as parse from 'date-fns/parse';
 import { EventDetails } from './model';
 import { printTable, renderTable } from './render';
+import { scrapeLink } from './scrape';
 
 function main(): void {
   const eventsSource: string[] = [
@@ -9,14 +10,9 @@ function main(): void {
     'https://www.meetup.com/rust-language-milano/events/254832595/',
     'https://www.meetup.com/Avanscoperta-Meetups-Workshops-Courses/events/253415687/',
   ];
-
-  //   const table = renderTable({
-  //     from: parse('20180924'),
-  //     to: parse('20180929'),
-  //     events,
-  //   });
-
-  //   printTable(table);
+  scrapeLink(eventsSource[0])
+    .fold(err => console.log('error', err), data => console.log('data', data))
+    .run();
 }
 
 main();

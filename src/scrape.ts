@@ -1,24 +1,44 @@
 import * as cheerio from 'cheerio';
 import axios, { AxiosResponse } from 'axios';
-import * as parse from 'date-fns/parse';
-import * as getHours from 'date-fns/get_hours';
-import * as getMinutes from 'date-fns/get_minutes';
-import { ParsedEventDetails, EventbriteDetails } from './model';
+import { TaskEither, tryCatch } from 'fp-ts/lib/TaskEither';
 
-const link = 'https://www.meetup.com/milano-front-end/events/254444645/';
-axios.get(link).then(res => {
-  extractDetailsFromMeetupResponse(link, res);
-});
+import { ParsedEventDetails, EventbriteDetails, MeetupDetails } from './model';
+
+const meetupRegex = /meetup/g;
+
+export function scrapeLink(link: string): TaskEither<any, ParsedEventDetails> {
+  return tryCatch(
+    () =>
+      axios
+        .get(link)
+        .then(
+          res =>
+            meetupRegex.test(link)
+              ? extractDetailsFromMeetupResponse(link, res)
+              : extractDetailsFromEventrbriteResponse(link, res),
+        ),
+    reason => reason,
+  );
+}
 
 function extractDetailsFromMeetupResponse(
   link: string,
   response: AxiosResponse<any>,
 ) {
   const $ = cheerio.load(response.data);
+  const d = parseInt(
+    $('div.eventTimeDisplay.eventDateTime--hover time').attr().datetime,
+    10,
+  );
 
-  const
+  const parsedMeetupData = {
+    name: $('.pageHead-headline').text(),
+    date: d,
+    link,
+    location: $('.venueDisplay > address:nth-child(1) > p:nth-child(1)').text(),
+  };
 
-  console.log($('.pageHead-headline').text());
+  return MeetupDetails(parsedMeetupData);
 }
 
 function extractDetailsFromEventrbriteResponse(
@@ -37,9 +57,6 @@ function extractDetailsFromEventrbriteResponse(
     date: fullDate,
     link,
     location: $('div.event-details__data:nth-child(4) > p:nth-child(1)').text(),
-    time: `${getHours(fullDate)}:${getMinutes(fullDate)
-      .toString()
-      .padStart(2, '0')}`,
   };
   return EventbriteDetails(parsedEventbriteData);
 }
