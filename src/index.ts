@@ -63,10 +63,12 @@ const renderHeaderRange = (from: Date, to: Date): string => {
 };
 
 const renderRow = (data: EventData): string => {
-  const evntDate = ` ${DAYS_ITA[getDay(data.date)]} **${getDate(
-    data.date,
-  )}**`.padEnd(10, ' ');
-  return `|${evntDate}| [Awesome Vue Vol.1](https://www.meetup.com/milano-front-end/events/254444645/)                                | Milano Frontend | Claudio Bisconti | mikamai 19:00 |
+  const { date, group, link, locationTime, name, who } = data;
+  const evntDate = ` ${DAYS_ITA[getDay(date)]} **${getDate(date)}**`.padEnd(18);
+  const eventData = ` [${name}](${link})`.padEnd(111);
+  return `|${evntDate}|${eventData}| ${group.padEnd(16)}| ${who.padEnd(
+    16,
+  )} | ${locationTime.padEnd(13)} |
   `;
 };
 
@@ -77,11 +79,11 @@ console.log(
     events: [
       {
         date: parse('20180924'),
-        name: 'string',
-        link: 'string',
-        group: 'string',
-        who: 'string',
-        locationTime: 'string',
+        name: 'Awesome Vue Vol.1',
+        link: 'https://www.meetup.com/milano-front-end/events/254444645/',
+        group: 'Milano Frontend',
+        who: 'Claudio Bisconti',
+        locationTime: 'mikamai 19:00',
       },
     ],
   }),
