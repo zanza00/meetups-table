@@ -1,7 +1,10 @@
 import * as parse from 'date-fns/parse';
-import { EventDetails } from './model';
-import { printTable, renderTable } from './render';
+import { array } from 'fp-ts/lib/Array';
+import { sequence } from 'fp-ts/lib/Traversable';
 import { scrapeLink } from './scrape';
+import { taskEither } from 'fp-ts/lib/TaskEither';
+
+const sequenceTEA = sequence(taskEither, array);
 
 function main(): void {
   const eventsSource: string[] = [
@@ -10,7 +13,10 @@ function main(): void {
     'https://www.meetup.com/rust-language-milano/events/254832595/',
     'https://www.meetup.com/Avanscoperta-Meetups-Workshops-Courses/events/253415687/',
   ];
-  scrapeLink(eventsSource[0])
+
+  const programs = eventsSource.map(source => scrapeLink(source));
+
+  sequenceTEA(programs)
     .fold(err => console.log('error', err), data => console.log('data', data))
     .run();
 }

@@ -4,20 +4,15 @@ import { TaskEither, tryCatch } from 'fp-ts/lib/TaskEither';
 
 import { ParsedEventDetails, EventbriteDetails, MeetupDetails } from './model';
 
-const meetupRegex = /meetup/g;
-
-export function scrapeLink(link: string): TaskEither<any, ParsedEventDetails> {
+export function scrapeLink(link: string): TaskEither<{}, ParsedEventDetails> {
   return tryCatch(
     () =>
-      axios
-        .get(link)
-        .then(
-          res =>
-            meetupRegex.test(link)
-              ? extractDetailsFromMeetupResponse(link, res)
-              : extractDetailsFromEventrbriteResponse(link, res),
-        ),
-    reason => reason,
+      axios.get(link).then(res => {
+        return link.includes('meetup.com')
+          ? extractDetailsFromMeetupResponse(link, res)
+          : extractDetailsFromEventrbriteResponse(link, res);
+      }),
+    reason => ({ reason, link, test: link.includes('meetup.com') }),
   );
 }
 
