@@ -31,6 +31,7 @@ function extractDetailsFromMeetupResponse(
     date: d,
     link,
     location: $('.venueDisplay > address:nth-child(1) > p:nth-child(1)').text(),
+    group: $('.event-info-group--groupName').text(), //
   };
 
   return MeetupDetails(parsedMeetupData);
