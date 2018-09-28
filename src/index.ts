@@ -6,10 +6,15 @@ import { parse } from 'date-fns';
 import { scrapeLink } from './scrape';
 import { fromParsedEventToEventDetails } from './conversion';
 import { printTable, renderTable } from './render';
+import { calcNextFridayFromMonday } from './utils';
 
 const sequenceTEA = sequence(taskEither, array);
 
 function main(): void {
+  const fromTo = calcNextFridayFromMonday(
+    parse('1/10/2018', 'dd/MM/yyyy', new Date()),
+  );
+
   const eventsSource: string[] = [
     'https://www.meetup.com/milano-front-end/events/254444645/',
     'https://www.eventbrite.com/e/registrazione-pybirra-sum-50264456342',
@@ -28,8 +33,7 @@ function main(): void {
         printTable(
           renderTable({
             events,
-            from: parse('24/09/2018', 'dd/MM/yyyy', new Date()),
-            to: parse('28/09/2018', 'dd/MM/yyyy', new Date()),
+            ...fromTo,
           }),
         ),
     )
